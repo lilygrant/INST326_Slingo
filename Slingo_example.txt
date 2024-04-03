@@ -1,0 +1,3 @@
+Hello, here is a sample text file for Slingo.py!
+
+I hope this works.
