@@ -1,5 +1,10 @@
 from argparse import ArgumentParser
 
+#class named 'Game' that will implement Slingo
+class Game():
+    def __init__(self) -> None:
+        pass
+    
 #Main project file
 def main():
     print("hello world")
@@ -10,3 +15,4 @@ main()
 def parse_args(arglist):
     parser = ArgumentParser()
     return parser.parse_args(argslist)
+
