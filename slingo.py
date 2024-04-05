@@ -12,8 +12,6 @@ def main():
 
 def placeBet(self, bet):
     pass
-
-def parseFunction:
 #Parse command-line arguments.
 def parse_args(arglist):
     parser = ArgumentParser()
