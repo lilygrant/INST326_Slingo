@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 class GameBoard():
     #game board is where the numbers are randomly generated or drawn during the game
     def __init__(self):
-        self.tiles = [] #
+        self.tiles = [] 
         
 class SlingoGame:
     def __init__(self):
