@@ -6,7 +6,49 @@ import random
 class GameBoard():
     #game board is where the numbers are randomly generated or drawn during the game
     def __init__(self):
-        self.tiles = [] 
+        """Initializes the game board.
+        """
+        self.tiles = []
+    def checkBoard(self, player_board):
+        """Checks the board for any complete rows, columns, or diagonals.
+
+        Args:
+            player_board (list of str): a 5x5 representation of the board, with randomly generated numbers
+            for each tile and a free space in the middle.
+        """
+        size = 5
+        checked_lines = 0
+        for row in player_board:
+            complete_row = True
+            for num in row:
+                if num not in self.tiles:
+                    complete_row = False
+                    break
+            if complete_row:
+                checked_lines += 1
+        for col in range(size):
+            complete_col = True
+            for row in range(size):
+                if player_board[row][col] not in self.tiles:
+                    complete_col = False
+                    break
+            if complete_col:
+                checked_lines += 1
+        complete_d1 = True
+        complete_d2 = True
+        for diag in range(size):
+            if player_board[diag][diag] not in self.tiles:
+                    complete_d1 = False
+                    break
+            if player_board[diag][diag] not in self.tiles:
+                    complete_d2 = False
+                    break
+            if complete_d1:
+                checked_lines += 1
+            if complete_d2:
+                checked_lines += 1
+        if checked_lines > 0:
+            print("Slingo!")
         
 class SlingoGame:
     def __init__(self):
