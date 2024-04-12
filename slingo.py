@@ -17,7 +17,7 @@ class SlingoGame:
         # that the player is trying to match with the numbers drawn from the game board.
         self.player_board = []       
 
-    def placeBet(self, bet):
+    def placeBet(self, bet): 
         pass
 
     def wildcard(self,wildcard_type):
@@ -30,8 +30,22 @@ class SlingoGame:
                 if num in self.player_board:
                     #remove matched number from the board
                     self.board.tiles.remove(num)
-                
+class Player:
+    def __init__(self, name, funds):
+        self.name = name
+        self.funds = funds
+        #starting balance of player
+        
+    def placeBet(self, bet): 
+        if bet > self.funds:
+            print(f'Not enough money')
+            #bets cannot exceed funds
+        else:
+            self.funds -= bet
+            return bet 
+            #reduced funds after placed bet
             
+
 def spin_wheel(special):
     """ This function "spins" the wheel, it generates either 5 random items, 
         these items can be 5 random digits or 4 random digits and 1 wildcard. 
@@ -58,21 +72,19 @@ def spin_wheel(special):
             if(chance <= special[character]):
                 index = result.index(slot)
                 result[index] = character
-    result
-
+    return result
+    
 #Main project file
 def main():
-    special = {
-    "WILD": 5,
-    "JOKE": 5,
-    "X2": 5
+    test = {
+    "WILD": 2,
+    "JOKE": 2,
+    "X2": 2
     }
-    spin_wheel(special)
+    print(spin_wheel(test))
     
 #Parse command-line arguments.
 def parse_args(arglist):
     parser = ArgumentParser()
     return parser.parse_args(argslist)
-
-
 main()
