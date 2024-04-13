@@ -4,6 +4,8 @@ import random
 #class that will implement the game board for the game Slingo
 #we can initialize the board and display the board here 
 class GameBoard():
+    """Implements the game board
+    """
     #game board is where the numbers are randomly generated or drawn during the game
     def __init__(self):
         """Initializes the game board.
@@ -51,18 +53,23 @@ class GameBoard():
             print("Slingo!")
         
 class SlingoGame:
+    """Implements the game of Slingo
+    """
     def __init__(self):
         self.points = 0
         self.board = GameBoard()
 
         # specific to each player and represents the card or grid of numbers 
-        # that the player is trying to match with the numbers drawn from the game board.
+        # that the player is trying to match with the numbers drawn from the 
+        #game board.
         self.player_board = []       
 
-    def placeBet(self, bet): 
-        pass
-
     def wildcard(self,wildcard_type):
+        """Apply a wildcard effect to the game
+
+        Args:
+            wildcard_type (str): The type of wildcard to apply
+        """
         if wildcard_type == "Double Points":
             #double the players points
             self.points *= 2
