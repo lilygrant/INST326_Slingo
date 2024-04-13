@@ -87,7 +87,7 @@ class Player:
         
     def placeBet(self, bet): 
         if bet > self.funds:
-            print(f'Not enough money')
+            print(f'Not enough funds')
             #bets cannot exceed funds
         else:
             self.funds -= bet
