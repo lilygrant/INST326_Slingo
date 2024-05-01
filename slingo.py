@@ -1,6 +1,8 @@
 from argparse import ArgumentParser
 import random
 
+STARTING_FUNDS = 500
+STARTING_SPINS = 15
 #class that will implement the game board for the game Slingo
 #we can initialize the board and display the board here 
 class GameBoard():
@@ -11,6 +13,58 @@ class GameBoard():
         """Initializes the game board.
         """
         self.tiles = []
+
+    def randomboard(self):
+        tiles = []
+        used = []
+        for column in range(5):
+            row = []
+            num = random.randint(1,15)
+            while (num in used):
+                num = random.randint(1,15)
+            row.append(num)
+            used.append(num)
+
+            num = random.randint(16,30)
+            while (num in used):
+                num = random.randint(16,30)
+            row.append(num)
+            used.append(num)
+
+            num = random.randint(31,45)
+            while (num in used):
+                num = random.randint(31,45)
+            row.append(num)
+            used.append(num)
+
+            num = random.randint(46,60)
+            while (num in used):
+                num = random.randint(46,60)
+            row.append(num)
+            used.append(num)
+
+            num = random.randint(61,75)
+            while (num in used):
+                num = random.randint(61,75)
+            row.append(num)
+            used.append(num)
+
+            tiles.append(row)
+        self.tiles =  tiles
+
+    def printboard(self):
+         b = self.tiles
+         for row in range(5):
+            print("----------------")
+            print(
+                "|" + str(b[row][0]) + 
+                "|" + str(b[row][1]) + 
+                "|"+ str(b[row][2]) + 
+                "|" + str(b[row][3]) + 
+                "|" + str(b[row][4]) + 
+                "|")
+            print("----------------")
+
     def checkBoard(self, player_board):
         """Checks the board for any complete rows, columns, or diagonals.
 
@@ -55,9 +109,11 @@ class GameBoard():
 class SlingoGame:
     """Implements the game of Slingo
     """
-    def __init__(self):
-        self.points = 0
+    def __init__(self, player):
+        self.player = player
         self.board = GameBoard()
+        self.board.randomboard()
+        self.spins = STARTING_SPINS
 
         # specific to each player and represents the card or grid of numbers 
         # that the player is trying to match with the numbers drawn from the 
@@ -79,6 +135,37 @@ class SlingoGame:
                 if num in self.player_board:
                     #remove matched number from the board
                     self.board.tiles.remove(num)
+
+
+    def spin_wheel(special):
+        """ This method "spins" the wheel, it generates either 5 random items, 
+        these items can be 5 random digits or 4 random digits and 1 wildcard. 
+        The function prints whatever items you "spin".
+
+        Args:
+            special (dict): A dictionary of lists describing the wildcards that 
+            could be spun.
+
+        Side effects:
+            Prints to the player, the items that they rolled
+
+        Returns:
+            A list to the player that outlines what items they have rolled.
+        """
+        result = [random.randint(1,15),
+              random.randint(16,30),
+              random.randint(31,45),
+              random.randint(46,60), 
+              random.randint(61,75)]
+        for slot in result:
+            for character in special:
+                chance = random.randint(1,100)
+                if(chance <= special[character]):
+                    index = result.index(slot)
+                    result[index] = character
+        return result
+
+
 class Player:
     def __init__(self, name, funds):
         self.name = name
@@ -95,42 +182,27 @@ class Player:
             #reduced funds after placed bet
             
 
-def spin_wheel(special):
-    """ This function "spins" the wheel, it generates either 5 random items, 
-        these items can be 5 random digits or 4 random digits and 1 wildcard. 
-        The function prints whatever items you "spin".
-
-        Args:
-            special (dict): A dictionary of lists describing the wildcards that 
-            could be spun.
-
-        Side effects:
-            Prints to the player, the items that they rolled
-
-        Returns:
-            A list to the player that outlines what items they have rolled.
-        """
-    result = [random.randint(1,15),
-              random.randint(16,30),
-              random.randint(31,45),
-              random.randint(46,60), 
-              random.randint(61,75)]
-    for slot in result:
-        for character in special:
-            chance = random.randint(1,100)
-            if(chance <= special[character]):
-                index = result.index(slot)
-                result[index] = character
-    return result
     
 #Main project file
 def main():
-    test = {
-    "WILD": 2,
-    "JOKE": 2,
-    "X2": 2
-    }
-    print(spin_wheel(test))
+        name = input("Please Enter your name: ")
+        player = Player(name, STARTING_FUNDS)
+        print (f"Welcome to Slingo {name}!")
+        print (f"Your balance: {STARTING_FUNDS}")
+
+        play = True
+        while(play):
+            response = input(f"Please select S to begin or select Q to quit: ")
+            if response == "S" or response == "s":
+                game = SlingoGame(player)
+                game.board.printboard()
+
+            elif response == "Q" or response == "q":
+                print(f"Thank you for playing Slingo!")
+                play = False
+            
+            else:
+                print(f"Not a valid choice, please select S or Q.")
     
 #Parse command-line arguments.
 def parse_args(arglist):
