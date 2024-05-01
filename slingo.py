@@ -71,14 +71,22 @@ class GameBoard():
         Args:
             player_board (list of str): a 5x5 representation of the board, with randomly generated numbers
             for each tile and a free space in the middle.
+        
+        Returns:
+            boolean: True if there is a complete row, column, or diagonal.
         """
         #Defines all groups where a win is possible.
         complete = [(0, 1, 2, 3, 4), (5, 6, 7, 8, 9), (10, 11, 12, 13, 14),
                  (15, 16, 17, 18, 19), (20, 21, 22, 23, 24), (0, 5, 10, 15, 20),
                  (1, 6, 11, 16, 21), (2, 7, 12, 17, 22), (3, 8, 13, 18, 23),
-                 (4, 9, 14, 19, 24), (0, 6, 12, 18, 24), (20, 16, 12, 8, 4)]
+                 (4, 9, 14, 19, 24), (0, 6, 12, 18, 24), (4, 8, 12, 16, 20)]
         for spots in complete:
-            if all(player_board[index] == "X" for index in spots):
+            complete_line = True
+            for index in spots:
+                if player_board[index] != "X":
+                    complete_line = False
+                    break
+            if complete_line:
                 return True
         return False
         
