@@ -72,39 +72,15 @@ class GameBoard():
             player_board (list of str): a 5x5 representation of the board, with randomly generated numbers
             for each tile and a free space in the middle.
         """
-        size = 5
-        checked_lines = 0
-        for row in player_board:
-            complete_row = True
-            for num in row:
-                if num not in self.tiles:
-                    complete_row = False
-                    break
-            if complete_row:
-                checked_lines += 1
-        for col in range(size):
-            complete_col = True
-            for row in range(size):
-                if player_board[row][col] not in self.tiles:
-                    complete_col = False
-                    break
-            if complete_col:
-                checked_lines += 1
-        complete_d1 = True
-        complete_d2 = True
-        for diag in range(size):
-            if player_board[diag][diag] not in self.tiles:
-                    complete_d1 = False
-                    break
-            if player_board[diag][diag] not in self.tiles:
-                    complete_d2 = False
-                    break
-            if complete_d1:
-                checked_lines += 1
-            if complete_d2:
-                checked_lines += 1
-        if checked_lines > 0:
-            print("Slingo!")
+        #Defines all groups where a win is possible.
+        complete = [(0, 1, 2, 3, 4), (5, 6, 7, 8, 9), (10, 11, 12, 13, 14),
+                 (15, 16, 17, 18, 19), (20, 21, 22, 23, 24), (0, 5, 10, 15, 20),
+                 (1, 6, 11, 16, 21), (2, 7, 12, 17, 22), (3, 8, 13, 18, 23),
+                 (4, 9, 14, 19, 24), (0, 6, 12, 18, 24), (20, 16, 12, 8, 4)]
+        for spots in complete:
+            if all(player_board[index] == "X" for index in spots):
+                return True
+        return False
         
 class SlingoGame:
     """Implements the game of Slingo
@@ -206,6 +182,13 @@ def main():
     
 #Parse command-line arguments.
 def parse_args(arglist):
+    """Parse command-line arguments.
+
+    Arguments:
+        arglist (list of str): a list of command-line arguments.
+    """
     parser = ArgumentParser()
-    return parser.parse_args(argslist)
+    parser.add_argument()
+    parser.add_argument()
+    return parser.parse_args(arglist)
 main()
