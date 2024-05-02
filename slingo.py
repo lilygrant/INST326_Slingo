@@ -4,7 +4,7 @@ import random
 STARTING_FUNDS = 500
 STARTING_SPINS = 15
 #wildcard type and there chance (porbability) of showing up
-special_wildcards = {"Double Points": 10, "Remove Matches": 5, "Free Space": 5}
+special_wildcards = {"Double Points": 10, "Remove Matches": 5, "Free Space": 5, "Lose Points": 10}
 
 #class that will implement the game board for the game Slingo
 #we can initialize the board and display the board here 
@@ -123,6 +123,10 @@ class SlingoGame:
             random_num = random.choice(self.board.tiles)
             self.player_board.append(random_num)
             print("You have obtained a Free Space with number: ", random_num)
+        if wildcard_type == "Lose Points":
+            minimum = min(self.result)
+            self.points -= minimum
+            return f"You lost {minimum} points."
 
 
 
