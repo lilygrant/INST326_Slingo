@@ -217,22 +217,24 @@ class Player:
     
 #Main project file
 def main():
-    name = input("Please Enter your name: ")
-    player = Player(name, STARTING_FUNDS)
-    print(f"Welcome to Slingo {name}!")
-    print(f"Your balance: {STARTING_FUNDS}")
+        name = input("Please Enter your name: ")
+        player = Player(name, STARTING_FUNDS)
+        print (f"Welcome to Slingo {name}!")
+        print (f"Your balance: {STARTING_FUNDS}")
 
-    play = True
-    while play:
-        response = input("Please select S to begin or select Q to quit: ")
-        if response.lower() == "s":
-            game = SlingoGame(player)
-            game.play_game()
-        elif response.lower() == "q":
-            print("Thank you for playing Slingo!")
-            play = False
-        else:
-            print("Not a valid choice, please select S or Q.")
+        play = True
+        while(play):
+            response = input(f"Please select S to begin or select Q to quit: ")
+            if response == "S" or response == "s":
+                game = SlingoGame(player)
+                game.board.printboard()
+
+            elif response == "Q" or response == "q":
+                print(f"Thank you for playing Slingo!")
+                play = False
+            
+            else:
+                print(f"Not a valid choice, please select S or Q.")
     
 #Parse command-line arguments.
 def parse_args(arglist):
