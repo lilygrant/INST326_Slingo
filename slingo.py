@@ -3,6 +3,9 @@ import random
 
 STARTING_FUNDS = 500
 STARTING_SPINS = 15
+#wildcard type and there chance (porbability) of showing up
+special_wildcards = {"Double Points": 10, "Remove Matches": 5, "Free Space": 5}
+
 #class that will implement the game board for the game Slingo
 #we can initialize the board and display the board here 
 class GameBoard():
@@ -98,10 +101,7 @@ class SlingoGame:
         self.board = GameBoard()
         self.board.randomboard()
         self.spins = STARTING_SPINS
-
-        # specific to each player and represents the card or grid of numbers 
-        # that the player is trying to match with the numbers drawn from the 
-        #game board.
+        self.points = STARTING_FUNDS
         self.player_board = []       
 
     def wildcard(self,wildcard_type):
@@ -119,9 +119,14 @@ class SlingoGame:
                 if num in self.player_board:
                     #remove matched number from the board
                     self.board.tiles.remove(num)
+        if wildcard_type == "Free Space":
+            random_num = random.choice(self.board.tiles)
+            self.player_board.append(random_num)
+            print("You have obtained a Free Space with number: ", random_num)
 
 
-    def spin_wheel(special):
+
+    def spin_wheel(self,special):
         """ This method "spins" the wheel, it generates either 5 random items, 
         these items can be 5 random digits or 4 random digits and 1 wildcard. 
         The function prints whatever items you "spin".
@@ -148,45 +153,86 @@ class SlingoGame:
                     index = result.index(slot)
                     result[index] = character
         return result
+    
+    def print_updated_board(self):
+        """Prints the updated board with 'X' over the matched numbers in the player's board.
+        """
+        player_board_set = set(self.player_board)
+        for row in range(5):
+            print("----------------")
+            for col in range(5):
+                num = self.board.tiles[row][col]
+                if num in player_board_set:
+                    print("|X", end="")
+                else:
+                    print(f"|{num}", end="")
+            print("|")
+        print("----------------")
+
+    def play_game(self):
+        """Starts and plays the Slingo game.
+        """
+        print("Welcome to Slingo, let's begin!")
+        print(f"Your starting balance: {STARTING_FUNDS}")
+
+        while self.spins > 0:
+            print("\nSpins left:", self.spins)
+            print("Player board:", self.player_board)
+
+            spin_result = self.spin_wheel(special_wildcards)
+            self.spins -= 1
+
+            # Update points earned
+            points_earned = 0
+
+            for item in spin_result:
+                if isinstance(item, int) and item in self.player_board:
+                    points_earned += 5
+                    self.player_board[self.player_board.index(item)] = "X"
+                elif isinstance(item, str) and item == "Free Space":
+                    points_earned += 10
+
+            self.player.add_points(points_earned)
+
+            print("Spin Result:", spin_result)
+            print("Points earned this round:", points_earned)
+            print("Total points:", self.player.points)
+
+            # Print the updated board
+            self.print_updated_board()
+
+        print("No more spins left. Game over!")
 
 
 class Player:
-    def __init__(self, name, funds):
+    def __init__(self, name, points):
         self.name = name
-        self.funds = funds
-        #starting balance of player
+        self.points  = points
+
+    def add_points(self, points):
+        self.points += points
         
-    def placeBet(self, bet): 
-        if bet > self.funds:
-            print(f'Not enough funds')
-            #bets cannot exceed funds
-        else:
-            self.funds -= bet
-            return bet 
-            #reduced funds after placed bet
             
 
     
 #Main project file
 def main():
-        name = input("Please Enter your name: ")
-        player = Player(name, STARTING_FUNDS)
-        print (f"Welcome to Slingo {name}!")
-        print (f"Your balance: {STARTING_FUNDS}")
+    name = input("Please Enter your name: ")
+    player = Player(name, STARTING_FUNDS)
+    print(f"Welcome to Slingo {name}!")
+    print(f"Your balance: {STARTING_FUNDS}")
 
-        play = True
-        while(play):
-            response = input(f"Please select S to begin or select Q to quit: ")
-            if response == "S" or response == "s":
-                game = SlingoGame(player)
-                game.board.printboard()
-
-            elif response == "Q" or response == "q":
-                print(f"Thank you for playing Slingo!")
-                play = False
-            
-            else:
-                print(f"Not a valid choice, please select S or Q.")
+    play = True
+    while play:
+        response = input("Please select S to begin or select Q to quit: ")
+        if response.lower() == "s":
+            game = SlingoGame(player)
+            game.play_game()
+        elif response.lower() == "q":
+            print("Thank you for playing Slingo!")
+            play = False
+        else:
+            print("Not a valid choice, please select S or Q.")
     
 #Parse command-line arguments.
 def parse_args(arglist):
