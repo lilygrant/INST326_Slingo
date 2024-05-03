@@ -126,7 +126,7 @@ class SlingoGame:
         if wildcard_type == "Lose Points":
             minimum = min(self.result)
             self.points -= minimum
-            return f"You lost {minimum} points."
+            print(f"You lost {minimum} points.")
 
 
 
@@ -240,7 +240,6 @@ def main():
             else:
                 print(f"Not a valid choice, please select S or Q.")
     
-#Parse command-line arguments.
 def parse_args(arglist):
     """Parse command-line arguments.
 
@@ -248,7 +247,6 @@ def parse_args(arglist):
         arglist (list of str): a list of command-line arguments.
     """
     parser = ArgumentParser()
-    parser.add_argument()
-    parser.add_argument()
+    parser.add_argument("-f", "--funds", type=int, help="Starting funds for the player")
+    parser.add_argument("-s", "--spins", type=int, help="Starting spins for the player")
     return parser.parse_args(arglist)
-main()
