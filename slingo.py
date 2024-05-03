@@ -208,11 +208,21 @@ class SlingoGame:
 
 
 class Player:
+    """Represents the player in the game.
+    """
     def __init__(self, name, points):
+        """Initializes a Player instance.
+
+        Args:
+            name (str): The name of the player.
+            points (int): The amonunt of points the player has.
+        """
         self.name = name
-        self.points  = points
+        self.points = points
 
     def add_points(self, points):
+        """Adds points to the player's total points.
+        """
         self.points += points
         
             
@@ -256,3 +266,6 @@ def parse_args(arglist):
     parser.add_argument("-f", "--funds", type=int, default=500, help="Starting funds for the player")
     parser.add_argument("-s", "--spins", type=int, default=15, help="Starting spins for the player")
     return parser.parse_args(arglist)
+
+if __name__ == "__main__":
+    main()
