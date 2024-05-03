@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import random
+import sys
 
 STARTING_FUNDS = 500
 STARTING_SPINS = 15
@@ -57,8 +58,8 @@ class GameBoard():
     def printboard(self):
         """Displays the game board.
         """
-         b = self.tiles
-         for row in range(5):
+        b = self.tiles
+        for row in range(5):
             print("----------------")
             print(
                 "|" + str(b[row][0]) + 
@@ -103,64 +104,50 @@ class SlingoGame:
         self.board.randomboard()
         self.spins = STARTING_SPINS
         self.points = STARTING_FUNDS
-        self.player_board = []       
+        self.player_board = [] 
+           
 
-    def wildcard(self, wildcard_type):
-        """Apply a wildcard effect to the game.
 
-        Args:
-            wildcard_type (str): The type of wildcard to apply.
-        """
-        if wildcard_type == "Double Points":
-            #double the players points
-            self.points *= 2
-            print("Points Doubled!")
-        if wildcard_type == "Remove Matches":
-            for num in self.board.tiles:
-                if num in self.player_board:
-                    #remove matched number from the board
-                    self.board.tiles.remove(num)
-        if wildcard_type == "Free Space":
-            random_num = random.choice(self.board.tiles)
-            self.player_board.append(random_num)
-            print("You have obtained a Free Space with number: ", random_num)
-        if wildcard_type == "Lose Points":
-            minimum = min(self.result)
-            self.points -= minimum
-            print(f"You lost {minimum} points.")
-
-    def spin_wheel(self,special):
-        """ This method "spins" the wheel, it generates either 5 random items, 
-        these items can be 5 random digits or 4 random digits and 1 wildcard. 
-        The function prints whatever items you "spin".
-
-        Args:
-            special (dict): A dictionary of lists describing the wildcards that 
-            could be spun.
-
-        Side effects:
-            Prints to the player, the items that they rolled
-
-        Returns:
-            A list to the player that outlines what items they have rolled.
-        """
-        result = [random.randint(1,15),
-              random.randint(16,30),
-              random.randint(31,45),
-              random.randint(46,60), 
-              random.randint(61,75)]
-        for slot in result:
-            for character in special:
-                chance = random.randint(1,100)
-                if(chance <= special[character]):
-                    index = result.index(slot)
-                    result[index] = character
+    def spin_wheel(self, special):
+        """Spins the wheel and generates random items or wildcards."""
+        result = []
+        for _ in range(5):
+            chance = random.randint(1, 100)
+            random_num = random.randint(1, 75)  # Generate random number if no wildcard
+            while random_num in result:  # Check for duplicates
+                random_num = random.randint(1, 75)  # Generate a new random number
+            if chance <= special_wildcards["Double Points"]:
+                result.append("Double Points")
+            elif chance <= special_wildcards["Double Points"] + special_wildcards["Remove Matches"]:
+                result.append("Remove Matches")
+            elif chance <= special_wildcards["Double Points"] + special_wildcards["Remove Matches"] + special_wildcards["Free Space"]:
+                # When a "Free Space" wildcard is spun, ensure the number does not match any number in the spin result
+                matched_numbers = [num for row in self.board.tiles for num in row]
+                while random_num in matched_numbers or random_num in result:  # Check if the number already exists in the spin result
+                    random_num = random.randint(1, 75)  # Generate a new random number
+                result.append("Free Space")
+                result.append(random_num)  # Add the random number
+            elif chance <= special_wildcards["Double Points"] + special_wildcards["Remove Matches"] + special_wildcards["Free Space"] + special_wildcards["Lose Points"]:
+                result.append("Lose Points")
+            else:
+                result.append(random_num)
+        # Check for matches and add them to the player's board
+        for item in result:
+            if isinstance(item, int):
+                for row in self.board.tiles:
+                    if item in row:
+                        self.player_board.append([item])  # Add matched number to player's board
+                        row[row.index(item)] = 'X'  # Mark the number as matched on the game board
         return result
-    
+
+
+
+
+
     def print_updated_board(self):
         """Prints the updated board with 'X' over the matched numbers in the player's board.
         """
-        player_board_set = set(self.player_board)
+        player_board_set = set(map(tuple, self.player_board))
         for row in range(5):
             print("----------------")
             for col in range(5):
@@ -171,13 +158,13 @@ class SlingoGame:
                     print(f"|{num}", end="")
             print("|")
         print("----------------")
-
+        
     def play_game(self):
-        """Starts and plays the Slingo game.
-        """
+        """Starts and plays the Slingo game."""
+        
         print("Welcome to Slingo, let's begin!")
         print(f"Your starting balance: {STARTING_FUNDS}")
-
+        
         while self.spins > 0:
             print("\nSpins left:", self.spins)
             print("Player board:", self.player_board)
@@ -187,25 +174,61 @@ class SlingoGame:
 
             # Update points earned
             points_earned = 0
-
+            points_lost = 0
+            
             for item in spin_result:
-                if isinstance(item, int) and item in self.player_board:
-                    points_earned += 5
-                    self.player_board[self.player_board.index(item)] = "X"
+                if isinstance(item, int):
+                    # Check if the number matches any on the board and update points earned
+                    matched_numbers = []
+                    for row in self.player_board:
+                        if item in row:
+                            points_earned += 5
+                            matched_numbers.append(item)
+                    if matched_numbers:
+                        print("Matched numbers in this round:", matched_numbers)
                 elif isinstance(item, str) and item == "Free Space":
-                    points_earned += 10
-
-            self.player.add_points(points_earned)
+                    # Implement logic to obtain a free space with a random number
+                    random_num = spin_result[spin_result.index("Free Space") + 1]  # Get the next item after "Free Space"
+                    self.player_board.append([random_num])
+                    print("You have obtained a Free Space with number:", random_num)
+                elif isinstance(item, str) and item == "Double Points":
+                    print("Points Doubled!")
+                elif isinstance(item, str) and item == "Lose Points":
+                    # Implement logic to deduct points
+                    points_to_lose = random.randint(1, 100)  # Example: random deduction between 1 and 100
+                    if points_to_lose >= self.player.points:
+                        # Points to lose exceed total points, end the game
+                        print("You lost all your points. Game over!")
+                        self.player.points = 0
+                        break  # End the game
+                    else:
+                        points_lost += points_to_lose  # Accumulate points lost
+                        print(f"You lost {points_to_lose} points.")
+                                        
+            if "Double Points" in spin_result:
+                points_earned *= 2
+                        
+            # Calculate total points earned
+            total_points_earned = points_earned - points_lost
+            self.player.add_points(total_points_earned)
 
             print("Spin Result:", spin_result)
-            print("Points earned this round:", points_earned)
+            print("Points earned this round:", total_points_earned)
             print("Total points:", self.player.points)
 
             # Print the updated board
             self.print_updated_board()
+            
+            while True:
+                response = input("Press 's' to spin again or 'q' to exit: ")
+                if response.lower() == 's':
+                    break
+                if response.lower() == 'q':
+                    exit()
 
         print("No more spins left. Game over!")
 
+    
 
 class Player:
     def __init__(self, name, points):
@@ -220,25 +243,23 @@ class Player:
     
 #Main project file
 def main():
-        name = input("Please Enter your name: ")
-        player = Player(name, STARTING_FUNDS)
-        print (f"Welcome to Slingo {name}!")
-        print (f"Your balance: {STARTING_FUNDS}")
+    name = input("Please Enter your name: ")
+    player = Player(name, STARTING_FUNDS)
+    print(f"Welcome to Slingo {name}!")
+    print(f"Your balance: {STARTING_FUNDS}")
 
-        play = True
-        while(play):
-            response = input(f"Please select S to begin or select Q to quit: ")
-            if response == "S" or response == "s":
-                game = SlingoGame(player)
-                game.board.printboard()
+    play = True
+    while play:
+        response = input("Please select S to begin or select Q to quit: ")
+        if response.lower() == "s":
+            game = SlingoGame(player)
+            game.play_game()
+        elif response.lower() == "q":
+            print("Thank you for playing Slingo!")
+            play = False
+        else:
+            print("Not a valid choice, please select S or Q.")
 
-            elif response == "Q" or response == "q":
-                print(f"Thank you for playing Slingo!")
-                play = False
-            
-            else:
-                print(f"Not a valid choice, please select S or Q.")
-    
 def parse_args(arglist):
     """Parse command-line arguments.
 
@@ -256,3 +277,12 @@ def parse_args(arglist):
     parser.add_argument("-f", "--funds", type=int, default=500, help="Starting funds for the player")
     parser.add_argument("-s", "--spins", type=int, default=15, help="Starting spins for the player")
     return parser.parse_args(arglist)
+
+if __name__ == "__main__":
+    args = parse_args(sys.argv[1:])
+    STARTING_FUNDS = args.funds
+    STARTING_SPINS = args.spins
+    main()
+       
+
+
