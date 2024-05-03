@@ -5,7 +5,7 @@ import sys
 STARTING_FUNDS = 500
 STARTING_SPINS = 15
 #wildcard type and there chance (porbability) of showing up
-special_wildcards = {"Double Points": 10, "Remove Matches": 5, "Free Space": 5, "Lose Points": 10}
+special_wildcards = {"Double Points": 10,  "Free Space": 5, "Lose Points": 10}
 
 class GameBoard():
     """Implements the game board.
@@ -118,16 +118,14 @@ class SlingoGame:
                 random_num = random.randint(1, 75)  # Generate a new random number
             if chance <= special_wildcards["Double Points"]:
                 result.append("Double Points")
-            elif chance <= special_wildcards["Double Points"] + special_wildcards["Remove Matches"]:
-                result.append("Remove Matches")
-            elif chance <= special_wildcards["Double Points"] + special_wildcards["Remove Matches"] + special_wildcards["Free Space"]:
+            elif chance <= special_wildcards["Double Points"] + special_wildcards["Free Space"]:
                 # When a "Free Space" wildcard is spun, ensure the number does not match any number in the spin result
                 matched_numbers = [num for row in self.board.tiles for num in row]
                 while random_num in matched_numbers or random_num in result:  # Check if the number already exists in the spin result
                     random_num = random.randint(1, 75)  # Generate a new random number
                 result.append("Free Space")
                 result.append(random_num)  # Add the random number
-            elif chance <= special_wildcards["Double Points"] + special_wildcards["Remove Matches"] + special_wildcards["Free Space"] + special_wildcards["Lose Points"]:
+            elif chance <= special_wildcards["Double Points"] + special_wildcards["Free Space"] + special_wildcards["Lose Points"]:
                 result.append("Lose Points")
             else:
                 result.append(random_num)
@@ -139,8 +137,6 @@ class SlingoGame:
                         self.player_board.append([item])  # Add matched number to player's board
                         row[row.index(item)] = 'X'  # Mark the number as matched on the game board
         return result
-
-
 
 
 
