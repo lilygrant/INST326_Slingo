@@ -287,3 +287,9 @@ def parse_args(arglist):
     parser.add_argument("-f", "--funds", type=int, default=500, help="Starting funds for the player")
     parser.add_argument("-s", "--spins", type=int, default=15, help="Starting spins for the player")
     return parser.parse_args(arglist)
+
+if __name__ == "__main__":
+    args = parse_args(sys.argv[1:])
+    STARTING_FUNDS = args.funds
+    STARTING_SPINS = args.spins
+    main()
