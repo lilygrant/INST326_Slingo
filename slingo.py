@@ -6,18 +6,17 @@ STARTING_SPINS = 15
 #wildcard type and there chance (porbability) of showing up
 special_wildcards = {"Double Points": 10, "Remove Matches": 5, "Free Space": 5, "Lose Points": 10}
 
-#class that will implement the game board for the game Slingo
-#we can initialize the board and display the board here 
 class GameBoard():
-    """Implements the game board
+    """Implements the game board.
     """
-    #game board is where the numbers are randomly generated or drawn during the game
     def __init__(self):
         """Initializes the game board.
         """
         self.tiles = []
 
     def randomboard(self):
+        """Generates the game board with randomly generated numbers.
+        """
         tiles = []
         used = []
         for column in range(5):
@@ -56,6 +55,8 @@ class GameBoard():
         self.tiles =  tiles
 
     def printboard(self):
+        """Displays the game board.
+        """
          b = self.tiles
          for row in range(5):
             print("----------------")
@@ -94,7 +95,7 @@ class GameBoard():
         return False
         
 class SlingoGame:
-    """Implements the game of Slingo
+    """Implements the game of Slingo.
     """
     def __init__(self, player):
         self.player = player
@@ -104,11 +105,11 @@ class SlingoGame:
         self.points = STARTING_FUNDS
         self.player_board = []       
 
-    def wildcard(self,wildcard_type):
-        """Apply a wildcard effect to the game
+    def wildcard(self, wildcard_type):
+        """Apply a wildcard effect to the game.
 
         Args:
-            wildcard_type (str): The type of wildcard to apply
+            wildcard_type (str): The type of wildcard to apply.
         """
         if wildcard_type == "Double Points":
             #double the players points
@@ -127,8 +128,6 @@ class SlingoGame:
             minimum = min(self.result)
             self.points -= minimum
             print(f"You lost {minimum} points.")
-
-
 
     def spin_wheel(self,special):
         """ This method "spins" the wheel, it generates either 5 random items, 
@@ -243,10 +242,17 @@ def main():
 def parse_args(arglist):
     """Parse command-line arguments.
 
-    Arguments:
+    Allow two optional arguments:
+        -f, --funds: the starting funds for the player.
+        -s, --spins: the starting spins for the player.
+
+    Args:
         arglist (list of str): a list of command-line arguments.
+
+    Returns:
+        namespace: the parsed arguments, as a namespace.
     """
     parser = ArgumentParser()
-    parser.add_argument("-f", "--funds", type=int, help="Starting funds for the player")
-    parser.add_argument("-s", "--spins", type=int, help="Starting spins for the player")
+    parser.add_argument("-f", "--funds", type=int, default=500, help="Starting funds for the player")
+    parser.add_argument("-s", "--spins", type=int, default=15, help="Starting spins for the player")
     return parser.parse_args(arglist)
