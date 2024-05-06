@@ -17,11 +17,19 @@ class GameBoard():
 
     def randomboard(self):
         """Generates the game board with randomly generated numbers.
+    
+        Returns:
+            tiles (list): The numbers within the Gameboard tiles.
+        
+        Side effects:
+            Appends values used to the 'used' and 'row' lists to keep track of 
+            values used in the random board. 
         """
+
         tiles = []
         used = []
+        row = []
         for column in range(5):
-            row = []
             num = random.randint(1,15)
             while (num in used):
                 num = random.randint(1,15)
@@ -57,6 +65,10 @@ class GameBoard():
 
     def printboard(self):
         """Displays the game board.
+
+        Side effects:
+            Prints the randomly generated numbers generated for the Gameboard
+            in their own boxes. 
         """
         b = self.tiles
         for row in range(5):
@@ -106,10 +118,30 @@ class SlingoGame:
         self.points = STARTING_FUNDS
         self.player_board = [] 
            
+    def __repr__(self):
+        """ Provides a formal string representation of the SlingoGame class.
 
+        Returns:
+            F string: containing information on the state of the game like the 
+            player's name and number of spins. 
+        """
+        return f"SlingoGame({self.player}, {self.spins})"
 
-    def spin_wheel(self, special):
-        """Spins the wheel and generates random items or wildcards."""
+    def spin_wheel(self):
+        """Spins the wheel and generates random items or wildcards.
+        
+        Args:
+            self
+            
+        Returns:
+            result(list of integers): The numbers or wildcards that the player 
+            has spun for the given turn.
+            
+        Side effects:
+            Alters the tiles within the class and replaces them with an 'X' when 
+            a value matches an original number in a tile. 
+        
+        """
         result = []
         for _ in range(5):
             chance = random.randint(1, 100)
@@ -238,6 +270,9 @@ class Player:
         """
         self.name = name
         self.points = points
+
+    def __repr__(self):
+      return f"Player({self.player}, {self.points})"
 
     def add_points(self, points):
         """Adds points to the player's total points.
