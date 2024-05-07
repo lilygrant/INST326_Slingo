@@ -10,10 +10,12 @@ STARTING_SPINS = 10
 special_wildcards = {"Double Points": 3,  "Free Space": 5, "Lose Points": 3}
 
 class GameBoard():
-    """Implements the game board.
+    """Implements the game board. 
     """
     def __init__(self):
         """Initializes the game board.
+        
+        Author: Egypt Butler 
         """
         self.tiles = []
 
@@ -26,6 +28,8 @@ class GameBoard():
         Side effects:
             Appends values used to the 'used' and 'row' lists to keep track of 
             values used in the random board. 
+            
+        Author: Lily Grant 
         """
 
         tiles = []
@@ -71,6 +75,8 @@ class GameBoard():
         Side effects:
             Prints the randomly generated numbers generated for the Gameboard
             in their own boxes. 
+            
+        Author: Lily Grant 
         """
         b = self.tiles
         for row in range(5):
@@ -99,6 +105,8 @@ class GameBoard():
         
         Returns:
             boolean: True if there is a complete row, column, or diagonal.
+            
+        Author: Maggie Zhang 
         """
         #Defines all groups where a win is possible.
         complete = [(0, 1, 2, 3, 4), (5, 6, 7, 8, 9), (10, 11, 12, 13, 14),
@@ -119,6 +127,16 @@ class SlingoGame:
     """Implements the game of Slingo.
     """
     def __init__(self, player):
+        """Initializes a SlingoGame instance.
+
+        Args:
+            player (Player): The player participating in the game.
+
+        Side Effects:
+            - Initializes the game state including the player, game board, spins, player board, and scores.
+            
+        Author: Egypt Butler 
+        """
         self.player = player
         self.board = GameBoard()
         self.board.randomboard()
@@ -131,6 +149,8 @@ class SlingoGame:
         Returns:
             F string: containing information on the state of the game like the 
             player's name and number of spins. 
+            
+        Author: Lily Grant
         """
         return f"SlingoGame({self.player}, {self.spins})"
 
@@ -148,6 +168,8 @@ class SlingoGame:
         Side effects:
             Alters the tiles within the class and replaces them with an 'X' when 
             a value matches an original number in a tile. 
+            
+        Author: Lily Grant
         
         """
         result = []
@@ -181,6 +203,11 @@ class SlingoGame:
 
     def print_updated_board(self):
         """Prints the updated board with 'X' over the matched numbers in the player's board.
+        
+        Side Effects:
+            Prints the updated game board to the console.
+            
+        Author: Egypt Butler 
         """
         player_board_set = set(map(tuple, self.player_board))
         for row in range(5):
@@ -195,8 +222,17 @@ class SlingoGame:
         print("----------------")
         
     def play_game(self,special_wildcards = None):
-        """Starts and plays the Slingo game."""
-        
+        """Starts and plays the Slingo game.
+
+        Args:
+            special_wildcards (list, optional): A list of special wildcard items for spinning. Defaults to None.
+
+        Side Effects:
+            - Manages the game loop, including player spins, updating points, and printing game information.
+            - Modifies the game state including player points, spins left, and player board.
+            
+        Author: Egypt Butler
+        """
         print("Welcome to Slingo, let's begin!")
         print("Here is your Slingo board: ")
         self.print_updated_board()
@@ -269,6 +305,8 @@ class SlingoGame:
 
 class Player:
     """Represents the player in the game.
+    
+    Author: Lily Grant
     """
     def __init__(self, name, points):
         """Initializes a Player instance.
@@ -276,15 +314,29 @@ class Player:
         Args:
             name (str): The name of the player.
             points (int): The amonunt of points the player has.
+            
+        Author: Lily Grant
         """
         self.name = name
         self.points = points
 
     def __repr__(self):
-      return f"Player({self.player}, {self.points})"
+        """String representation of Player instance.
+        
+        Author: Lily Grant
+        """
+        return f"Player({self.player}, {self.points})"
 
     def add_points(self, points):
-        """Adds points to the player's total points.
+         """Adds points to the player's total points.
+
+        Args:
+            points (int): The number of points to add to the player's total points.
+
+        Side Effects:
+            Modifies the player's total points.
+            
+        Author: Egypt Butler 
         """
         self.points += points
         
@@ -322,6 +374,8 @@ def plot_score_trend(scores_all_games):
 
     Args:
         scores_all_games (list of int): List of scores after each game.
+        
+    Author: Nahum Ephrem 
     """
     plt.figure(figsize=(12, 6))
     sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
@@ -342,6 +396,8 @@ def parse_args(arglist):
 
     Returns:
         namespace: the parsed arguments, as a namespace.
+        
+    Author: Maggie Zhang 
     """
     parser = ArgumentParser()
     parser.add_argument("-s", "--spins", type=int, default=9, help="Starting spins for the player")
