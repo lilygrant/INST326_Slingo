@@ -4,6 +4,7 @@ import sys
 import seaborn as sns
 import matplotlib.pyplot as plt
 import re
+import json
 
 
 STARTING_SPINS = 10
@@ -299,6 +300,34 @@ class SlingoGame:
 
         print("No more spins left. Game over!")
     
+    def save_game_state(self, filename):
+        """it saves the current game state to a JSOnfile."""
+        game_state = {
+            "player_name": self.player.name,
+            "points": self.player.points,
+            "board":self.player_board,
+            "spins": self.spins,
+            "scores":self.scores
+        }
+        with open(filename, "w") as f:
+            json.dump(game_state, f)
+    
+    def curr_game_state(self, filename):
+        """Load the game state from a JSON file.
+
+        Args:
+            filename (str): The name of the JSON file containing the game state.
+
+        Author: Nahum Ephrem
+        """
+        with open(filename, "r") as f:
+            game_state = json.load(f)
+            self.player.name = game_state["player_name"]
+            self.player.points = game_state["points"]
+            self.player_board = game_state["board"]
+            self.spins = game_state["spins"]
+            self.scores = game_state["scores"]
+
 
 class Player:
     """Represents the player in the game.
@@ -345,13 +374,13 @@ def main():
     print(f"Welcome to Slingo {name}!")
 
     play = True
-    scores_all_games = []  # Store scores from all games
+    scores_all_games = []  # Store score from all games
     while play:
         response = input("Please select s to begin, select q to quit, or select h for help: ")
         if response.lower() == "s":
             game = SlingoGame(player)
             game.play_game()
-            scores_all_games.extend(game.scores)  # Add scores from the current game to the list
+            scores_all_games.extend(game.scores)  # Adds scores from the current game to the list
         elif response.lower() == "q":
             print("Thank you for playing Slingo!")
             play = False
@@ -361,12 +390,23 @@ def main():
                     print(line)
         else:
             print(f'Not a valid choice, please select s, h, or q.')
+    
+    plot_score_trend(scores_all_games)  # plots the score trend after all games have been played
+
+ # Save game state
+    game.save_game_state("game_state.json")
+
+    # Load game state
+    game.load_game_state("game_state.json")
+
 
 
     
 
 def plot_score_trend(scores_all_games):
-    """Plot the trend of scores over multiple games. Nahum Ephrem is the primary 
+    """Plot the trend of scores over multiple games. 
+    
+    author: Nahum Ephrem 
     author and claims the visualizing data with matplot seaborn technique.
 
     Args:
