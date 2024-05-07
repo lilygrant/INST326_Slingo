@@ -194,7 +194,7 @@ class SlingoGame:
             print("|")
         print("----------------")
         
-    def play_game(self):
+    def play_game(self,special_wildcards = None):
         """Starts and plays the Slingo game."""
         
         print("Welcome to Slingo, let's begin!")
@@ -218,31 +218,29 @@ class SlingoGame:
             for item in spin_result:
                 if isinstance(item, int):
                     # Check if the number matches any on the board and update points earned
-                    matched_numbers = []
-                    for row in self.player_board:
-                        if item in row:
-                            points_earned += 5
-                            matched_numbers.append(item)
+                    matched_numbers = [item for row in self.player_board if item in row]
+                    points_earned += len(matched_numbers) * 5
                     if matched_numbers:
                         print("Matched numbers in this round:", matched_numbers)
                 elif isinstance(item, str) and item == "Free Space":
                     # Implement logic to obtain a free space with a random number
-                    random_num = spin_result[spin_result.index("Free Space") + 1]  # Get the next item after "Free Space"
-                    self.player_board.append([random_num])
-                    print("You have obtained a Free Space with number:", random_num)
+                    random_num = spin_result[spin_result.index("Free Space") + 1] if "Free Space" in spin_result else None
+                    if random_num:
+                        self.player_board.append([random_num])
+                        print(f"You have obtained a Free Space with number: {random_num}")
                 elif isinstance(item, str) and item == "Double Points":
                     print("Points Doubled!")
                 elif isinstance(item, str) and item == "Lose Points":
                     # Implement logic to deduct points
                     points_to_lose = random.randint(1, 50)  # Example: random deduction between 1 and 100
+                    points_lost += min(points_to_lose, self.player.points)  # Deduct minimum of points to lose and current points
+                    if points_lost:
+                        print(f"You lost {points_lost} points.")
                     if points_to_lose >= self.player.points:
                         # Points to lose exceed total points, end the game
-                        print("You lost all your points. Game over!")
-                        self.player.points = 0
-                        break  # End the game
-                    else:
-                        points_lost += points_to_lose  # Accumulate points lost
-                        print(f"You lost {points_to_lose} points.")
+                        print("You lost all your points")
+                        
+        
                                         
             if "Double Points" in spin_result:
                 points_earned *= 2
