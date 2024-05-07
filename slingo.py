@@ -98,7 +98,8 @@ class GameBoard():
             print("----------------")
 
     def checkBoard(self, player_board):
-        """Checks the board for any complete rows, columns, or diagonals.
+        """Checks the board for any complete rows, columns, or diagonals. Maggie Zhang is the primary
+        author.
 
         Args:
             player_board (list of str): a 5x5 representation of the board, with randomly generated numbers
@@ -106,8 +107,6 @@ class GameBoard():
         
         Returns:
             boolean: True if there is a complete row, column, or diagonal.
-            
-        Author: Maggie Zhang 
         """
         #Defines all groups where a win is possible.
         complete = [(0, 1, 2, 3, 4), (5, 6, 7, 8, 9), (10, 11, 12, 13, 14),
@@ -286,6 +285,10 @@ class SlingoGame:
 
             # Print the updated board
             self.print_updated_board()
+
+            if self.player.points >= 200:
+                print("Game over! You have reached or exceeded 200 points!")
+                break
             
             while True:
                 response = input("Press 's' to spin again or 'q' to exit: ")
@@ -323,21 +326,18 @@ class Player:
 
     def add_points(self, points):
         """
-        Adds points to the player's total points.
+        Adds points to the player's total points. Egypt Butler is the primary
+        author.
 
         Args:
             points (int): The number of points to add to the player's total points.
 
         Side Effects:
             Modifies the player's total points.
-            
-        Author: Egypt Butler
         """
         self.points += points
          
-        
-            
-    
+
 #Main project file
 def main():
     name = input("Please Enter your name: ")
@@ -366,12 +366,11 @@ def main():
     
 
 def plot_score_trend(scores_all_games):
-    """Plot the trend of scores over multiple games.
+    """Plot the trend of scores over multiple games. Nahum Ephrem is the primary 
+    author and claims the visualizing data with matplot seaborn technique.
 
     Args:
         scores_all_games (list of int): List of scores after each game.
-        
-    Author: Nahum Ephrem 
     """
     plt.figure(figsize=(12, 6))
     sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
@@ -382,9 +381,10 @@ def plot_score_trend(scores_all_games):
 
 
 def parse_args(arglist):
-    """Parse command-line arguments.
+    """Parse command-line arguments. Maggie Zhang is the primary author and
+    claims the ArgumentParser class technique.
 
-    Allow two optional arguments:
+    Allow one optional argument:
         -s, --spins: the starting spins for the player.
 
     Args:
@@ -392,11 +392,9 @@ def parse_args(arglist):
 
     Returns:
         namespace: the parsed arguments, as a namespace.
-        
-    Author: Maggie Zhang 
     """
     parser = ArgumentParser()
-    parser.add_argument("-s", "--spins", type=int, default=9, help="Starting spins for the player")
+    parser.add_argument("-s", "--spins", type=int, default=10, help="Starting spins for the player")
     return parser.parse_args(arglist)
 
 if __name__ == "__main__":
