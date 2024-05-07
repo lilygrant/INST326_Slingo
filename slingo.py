@@ -1,6 +1,9 @@
 from argparse import ArgumentParser
 import random
 import sys
+import seaborn as sns
+import matplotlib.pyplot as plt
+#python3 -m pip install
 
 STARTING_FUNDS = 500
 STARTING_SPINS = 15
@@ -105,7 +108,7 @@ class SlingoGame:
         self.spins = STARTING_SPINS
         self.points = STARTING_FUNDS
         self.player_board = [] 
-           
+        self.scores = []
 
 
     def spin_wheel(self, special):
@@ -171,6 +174,10 @@ class SlingoGame:
             # Update points earned
             points_earned = 0
             points_lost = 0
+            
+            total_points_earned = points_earned - points_lost
+            self.player.add_points(total_points_earned)
+            self.scores.append(self.player.points)  # Store the score after each round
             
             for item in spin_result:
                 if isinstance(item, int):
@@ -255,16 +262,26 @@ def main():
     print(f"Your balance: {STARTING_FUNDS}")
 
     play = True
+    scores_all_games = []  # Store scores from all games
     while play:
         response = input("Please select S to begin or select Q to quit: ")
         if response.lower() == "s":
             game = SlingoGame(player)
             game.play_game()
+            scores_all_games.extend(game.scores)  # Add scores from the current game to the list
         elif response.lower() == "q":
             print("Thank you for playing Slingo!")
             play = False
         else:
             print("Not a valid choice, please select S or Q.")
+
+
+    plt.figure(figsize=(12, 6))
+    sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
+    plt.xlabel('Spin Number')
+    plt.ylabel('Score')
+    plt.title('Score Trend Over Multiple Spins')
+    plt.show()
 
 def parse_args(arglist):
     """Parse command-line arguments.
