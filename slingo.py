@@ -3,6 +3,7 @@ import random
 import sys
 import seaborn as sns
 import matplotlib.pyplot as plt
+import re
 
 
 STARTING_SPINS = 10
@@ -241,6 +242,7 @@ class SlingoGame:
             total_points_earned = points_earned - points_lost
             self.player.add_points(total_points_earned)
             self.scores.append(self.player.points)  # Store the score after each round
+       
             
             for item in spin_result:
                 if isinstance(item, int):
@@ -297,8 +299,6 @@ class SlingoGame:
 
 class Player:
     """Represents the player in the game.
-    
-    Author: Lily Grant
     """
     def __init__(self, name, points):
         """Initializes a Player instance.
@@ -307,8 +307,10 @@ class Player:
             name (str): The name of the player.
             points (int): The amonunt of points the player has.
             
-        Author: Lily Grant
+        Author: Egypt Butler
         """
+        if not re.match(r"^[a-zA-Z\s]+$", name):
+            raise ValueError("Invalid name. Name must contain only letters and spaces.")
         self.name = name
         self.points = points
 
