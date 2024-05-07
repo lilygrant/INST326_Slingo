@@ -1,0 +1,46 @@
+Hi welcome to Slingo Help!
+
+Game Objective:
+
+The objective of the game is to score as many points as possible in 15 rounds. 
+The player earns points by spinning matching values to those on their Slingo 
+board. Ultimately, the player will earn the most points by filling up the 
+Slingo board.
+
+How to earn points:
+
+The player earns 5 points for each individual value they spin that matches
+a value on the board. The player will also earn 100 points for obtaining Slingo. 
+That means they have hit 5 values in a row, in a column, or diagonally. Finally, 
+a player will earn 1000 points if they successfully fill up their entire Slingo 
+board. 
+
+Wild cards:
+
+The player has a small chance of spinning 3 different wildcards in the game. The
+first is a "Double Points" wildcard meaning that for that round whichever numbers
+they match on their boards, those points will be doubled. Next, the "Free Space"
+wildcard gives the player a random free space even if they did not roll that 
+number. Finally, the player can roll a "Lose Points" wildcard. This wildcard takes 
+a random number of points off of the player's score. 
+
+Be careful!
+    Rolling a Lose Points and a Double Points at the same time make you lose 
+    double the points!
+
+
+How to play Slingo:
+
+1. First you will enter your name when prompted, Slingo will refer to your 
+name throughout the game. 
+
+2. Select S to spin the wheel or Q to quit the game.
+    2a. Spinning the wheel will also walk the player through the game's process 
+        and explain how the game is operating. Be sure to pay attention to these 
+        notes.
+
+    2b. Selecting Q will automatically quit the game and erase your progress so 
+        be careful. 
+
+3. Spin continously until you have won the game, filled out the board, or until 
+    you have spun the wheel 15 times. 

@@ -2,10 +2,10 @@ from argparse import ArgumentParser
 import random
 import sys
 
-STARTING_FUNDS = 500
-STARTING_SPINS = 15
-#wildcard type and there chance (porbability) of showing up
-special_wildcards = {"Double Points": 10,  "Free Space": 5, "Lose Points": 10}
+
+STARTING_SPINS = 10
+#wildcard type and there chance (probability) of showing up
+special_wildcards = {"Double Points": 3,  "Free Space": 5, "Lose Points": 3}
 
 class GameBoard():
     """Implements the game board.
@@ -28,8 +28,8 @@ class GameBoard():
 
         tiles = []
         used = []
-        row = []
         for column in range(5):
+            row = []
             num = random.randint(1,15)
             while (num in used):
                 num = random.randint(1,15)
@@ -72,9 +72,15 @@ class GameBoard():
         """
         b = self.tiles
         for row in range(5):
+            x = ""
+            print(b[row][0])
+            if int(b[row][0]) < 10:
+                x = str(b[row][0]+ " ")
+            else:
+                x = str(b[row][0])
             print("----------------")
             print(
-                "|" + str(b[row][0]) + 
+                "|" + x + 
                 "|" + str(b[row][1]) + 
                 "|"+ str(b[row][2]) + 
                 "|" + str(b[row][3]) + 
@@ -115,7 +121,6 @@ class SlingoGame:
         self.board = GameBoard()
         self.board.randomboard()
         self.spins = STARTING_SPINS
-        self.points = STARTING_FUNDS
         self.player_board = [] 
            
     def __repr__(self):
@@ -127,11 +132,12 @@ class SlingoGame:
         """
         return f"SlingoGame({self.player}, {self.spins})"
 
-    def spin_wheel(self):
+    def spin_wheel(self,special):
         """Spins the wheel and generates random items or wildcards.
         
         Args:
-            self
+            special (dict): a dictionary of types of wildcards you can roll as 
+            keys and their values are their point values.
             
         Returns:
             result(list of integers): The numbers or wildcards that the player 
@@ -167,9 +173,8 @@ class SlingoGame:
                 for row in self.board.tiles:
                     if item in row:
                         self.player_board.append([item])  # Add matched number to player's board
-                        row[row.index(item)] = 'X'  # Mark the number as matched on the game board
+                        row[row.index(item)] = 'X '  # Mark the number as matched on the game board
         return result
-
 
 
     def print_updated_board(self):
@@ -191,8 +196,8 @@ class SlingoGame:
         """Starts and plays the Slingo game."""
         
         print("Welcome to Slingo, let's begin!")
-        print(f"Your starting balance: {STARTING_FUNDS}")
-        
+        print("Here is your Slingo board: ")
+        self.print_updated_board()
         while self.spins > 0:
             print("\nSpins left:", self.spins)
             print("Player board:", self.player_board)
@@ -223,7 +228,7 @@ class SlingoGame:
                     print("Points Doubled!")
                 elif isinstance(item, str) and item == "Lose Points":
                     # Implement logic to deduct points
-                    points_to_lose = random.randint(1, 100)  # Example: random deduction between 1 and 100
+                    points_to_lose = random.randint(1, 50)  # Example: random deduction between 1 and 100
                     if points_to_lose >= self.player.points:
                         # Points to lose exceed total points, end the game
                         print("You lost all your points. Game over!")
@@ -280,32 +285,33 @@ class Player:
         self.points += points
         
             
-
     
 #Main project file
 def main():
     name = input("Please Enter your name: ")
-    player = Player(name, STARTING_FUNDS)
+    player = Player(name,0)
     print(f"Welcome to Slingo {name}!")
-    print(f"Your balance: {STARTING_FUNDS}")
 
     play = True
     while play:
-        response = input("Please select S to begin or select Q to quit: ")
+        response = input("Please select S to begin, select Q to quit, or select H for help: ")
         if response.lower() == "s":
             game = SlingoGame(player)
             game.play_game()
         elif response.lower() == "q":
             print("Thank you for playing Slingo!")
             play = False
+        elif response.lower() == "h":
+            with open("Slingo_example.txt", "r", encoding= "utf-8") as f:
+                for line in f:
+                    print(line)
         else:
-            print("Not a valid choice, please select S or Q.")
+            print("Not a valid choice, please select S, H, or Q.")
 
 def parse_args(arglist):
     """Parse command-line arguments.
 
     Allow two optional arguments:
-        -f, --funds: the starting funds for the player.
         -s, --spins: the starting spins for the player.
 
     Args:
@@ -315,12 +321,10 @@ def parse_args(arglist):
         namespace: the parsed arguments, as a namespace.
     """
     parser = ArgumentParser()
-    parser.add_argument("-f", "--funds", type=int, default=500, help="Starting funds for the player")
-    parser.add_argument("-s", "--spins", type=int, default=15, help="Starting spins for the player")
+    parser.add_argument("-s", "--spins", type=int, default=9, help="Starting spins for the player")
     return parser.parse_args(arglist)
 
 if __name__ == "__main__":
     args = parse_args(sys.argv[1:])
-    STARTING_FUNDS = args.funds
     STARTING_SPINS = args.spins
     main()
