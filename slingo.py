@@ -319,13 +319,19 @@ def main():
 
     
 
+def plot_score_trend(scores_all_games):
+    """Plot the trend of scores over multiple games.
 
+    Args:
+        scores_all_games (list of int): List of scores after each game.
+    """
     plt.figure(figsize=(12, 6))
     sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
     plt.xlabel('Spin Number')
     plt.ylabel('Score')
     plt.title('Score Trend Over Multiple Spins')
     plt.show()
+
 
 def parse_args(arglist):
     """Parse command-line arguments.
