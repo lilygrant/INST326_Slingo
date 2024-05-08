@@ -443,11 +443,10 @@ def main():
     game.save_game_state("game_state.json")
 
     # Load game state
-    game.load_game_state("game_state.json")
+    game.curr_game_state("game_state.json")
 
 
 
-    
 
 def plot_score_trend(scores_all_games):
     """Plot the trend of scores over multiple games. 
