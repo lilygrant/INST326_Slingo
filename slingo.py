@@ -8,7 +8,7 @@ import json
 
 
 STARTING_SPINS = 10
-#wildcard type and there chance (probability) of showing up
+#Wildcard type and their chance (probability) of showing up.
 special_wildcards = {"Double Points": 3,  "Free Space": 5, "Lose Points": 3}
 
 class GameBoard():
@@ -144,6 +144,7 @@ class SlingoGame:
         self.spins = STARTING_SPINS
         self.player_board = [] 
         self.scores = []
+    
     def __repr__(self):
         """ Provides a formal string representation of the SlingoGame class.
 
@@ -221,7 +222,18 @@ class SlingoGame:
                     print(f"|{num}", end="")
             print("|")
         print("----------------")
+
+    def max_contribution(self, spin_scores):
+        """Prints the spin that contributed the most points. Maggie Zhang is the
+        primary author and claims the use of key function with max() technique.
         
+        Args:
+            spin_scores (list): List of scores obtained in each spin.
+        """
+        if spin_scores:
+            max_contribution = max(spin_scores, key=lambda x: x)
+            print(f"The spin that contributed the most points was {max_contribution}.")
+    
     def play_game(self, special_wildcards = None):
         """Starts and plays the Slingo game."""
         
@@ -279,6 +291,7 @@ class SlingoGame:
             # Calculate total points earned
             total_points_earned = points_earned - points_lost
             self.player.add_points(total_points_earned)
+            spin_scores.append(total_points_earned)
 
             print("Spin Result:", spin_result)
             print("Points earned this round:", total_points_earned)
@@ -289,7 +302,8 @@ class SlingoGame:
 
             if self.player.points >= 200:
                 print("Game over! You have reached or exceeded 200 points!")
-                break
+                self.max_contribution(spin_scores)
+                return
             
             while True:
                 response = input("Press 's' to spin again or 'q' to exit: ")
@@ -299,6 +313,7 @@ class SlingoGame:
                     exit()
 
         print("No more spins left. Game over!")
+        self.max_contribution(spin_scores)
     
     def save_game_state(self, filename):
         """it saves the current game state to a JSOnfile."""
