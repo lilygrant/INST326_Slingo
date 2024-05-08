@@ -99,8 +99,7 @@ class GameBoard():
             print("----------------")
 
     def checkBoard(self, player_board):
-        """Checks the board for any complete rows, columns, or diagonals. Maggie Zhang is the primary
-        author.
+        """Checks the board for any complete rows, columns, or diagonals. 
 
         Args:
             player_board (list of str): a 5x5 representation of the board, with randomly generated numbers
@@ -108,6 +107,8 @@ class GameBoard():
         
         Returns:
             boolean: True if there is a complete row, column, or diagonal.
+
+        Author: Maggie Zhang
         """
         #Defines all groups where a win is possible.
         complete = [(0, 1, 2, 3, 4), (5, 6, 7, 8, 9), (10, 11, 12, 13, 14),
@@ -153,6 +154,8 @@ class SlingoGame:
             player's name and number of spins. 
             
         Author: Lily Grant
+
+        Technique: magic methods
         """
         return f"SlingoGame({self.player}, {self.spins})"
 
@@ -164,8 +167,8 @@ class SlingoGame:
             keys and their values are their point values.
             
         Returns:
-            result(list of integers): The numbers or wildcards that the player 
-            has spun for the given turn.
+            result(list of integers or str): The numbers or wildcards that the 
+            player has spun for the given turn.
             
         Side effects:
             Alters the tiles within the class and replaces them with an 'X' when 
@@ -204,7 +207,8 @@ class SlingoGame:
 
 
     def print_updated_board(self):
-        """Prints the updated board with 'X' over the matched numbers in the player's board.
+        """Prints the updated board with 'X' over the matched numbers in the 
+            player's board.
         
         Side Effects:
             Prints the updated game board to the console.
@@ -224,11 +228,14 @@ class SlingoGame:
         print("----------------")
 
     def max_contribution(self, spin_scores):
-        """Prints the spin that contributed the most points. Maggie Zhang is the
-        primary author and claims the use of key function with max() technique.
+        """Prints the spin that contributed the most points. 
         
         Args:
             spin_scores (list): List of scores obtained in each spin.
+
+        Author: Maggie Zhang
+        
+        Technique: Use of a key function with max()
         """
         if spin_scores:
             max_contribution = max(spin_scores, key=lambda x: x)
@@ -347,6 +354,8 @@ class SlingoGame:
             filename (str): The name of the JSON file containing the game state.
 
         Author: Nahum Ephrem
+
+        Technique: JSON.load()
         """
         with open(filename, "r") as f:
             game_state = json.load(f)
@@ -380,6 +389,8 @@ class Player:
         """String representation of Player instance.
         
         Author: Lily Grant
+
+        Technique: magic methods
         """
         return f"Player({self.player}, {self.points})"
 
@@ -408,12 +419,15 @@ def main():
             prints to the player their options for the game. 
             intializes the SlingoGame class and Player class.
             prints the file line by line if the player requests help.
+            plots the score trend for the player
 
         Returns:
             The score of the game.
             
-        Author:
-            Lily Grant
+        Author: Lily Grant
+
+        Technique: with statement 
+        Technique: F strings containing expressions
           """
     name = input("Please Enter your name: ")
     player = Player(name,0)
@@ -447,15 +461,15 @@ def main():
 
 
 
-
 def plot_score_trend(scores_all_games):
     """Plot the trend of scores over multiple games. 
-    
-    author: Nahum Ephrem 
-    author and claims the visualizing data with matplot seaborn technique.
 
     Args:
         scores_all_games (list of int): List of scores after each game.
+
+    Author: Nahum Ephrem
+
+    Technique: Visualizing data (seaborn)
     """
     plt.figure(figsize=(12, 6))
     sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
@@ -466,8 +480,7 @@ def plot_score_trend(scores_all_games):
 
 
 def parse_args(arglist):
-    """Parse command-line arguments. Maggie Zhang is the primary author and
-    claims the ArgumentParser class technique.
+    """Parse command-line arguments. 
 
     Allow one optional argument:
         -s, --spins: the starting spins for the player.
@@ -477,6 +490,10 @@ def parse_args(arglist):
 
     Returns:
         namespace: the parsed arguments, as a namespace.
+
+    Author: Maggie Zhang
+
+    Technique: Argument Parser 
     """
     parser = ArgumentParser()
     parser.add_argument("-s", "--spins", type=int, default=10, help="Starting spins for the player")
