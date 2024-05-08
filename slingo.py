@@ -369,6 +369,20 @@ class Player:
 
 #Main project file
 def main():
+    """ This functions runs the game of slingo and works by prompting the player
+        a set of questions.
+         
+        Side effects:
+            prints to the player their options for the game. 
+            intializes the SlingoGame class and Player class.
+            prints the file line by line if the player requests help.
+
+        Returns:
+            The score of the game.
+            
+        Author:
+            Lily Grant
+          """
     name = input("Please Enter your name: ")
     player = Player(name,0)
     print(f"Welcome to Slingo {name}!")
