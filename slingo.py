@@ -181,29 +181,33 @@ class SlingoGame:
         result = []
         for _ in range(5):
             chance = random.randint(1, 100)
-            random_num = random.randint(1, 75)  # Generate random number if no wildcard
-            while random_num in result:  # Check for duplicates
-                random_num = random.randint(1, 75)  # Generate a new random number
+            random_num = random.randint(1, 75)  
+
+            while random_num in result:
+                random_num = random.randint(1, 75) 
+
             if chance <= special_wildcards["Double Points"]:
                 result.append("Double Points")
+
             elif chance <= special_wildcards["Double Points"] + special_wildcards["Free Space"]:
-                # When a "Free Space" wildcard is spun, ensure the number does not match any number in the spin result
                 matched_numbers = [num for row in self.board.tiles for num in row]
-                while random_num in matched_numbers or random_num in result:  # Check if the number already exists in the spin result
-                    random_num = random.randint(1, 75)  # Generate a new random number
-                result.append("Free Space")
-                result.append(random_num)  # Add the random number
+
+                while random_num in matched_numbers or random_num in result: 
+                    random_num = random.randint(1, 75)  
+                result.append(random_num) 
+
             elif chance <= special_wildcards["Double Points"] + special_wildcards["Free Space"] + special_wildcards["Lose Points"]:
                 result.append("Lose Points")
             else:
                 result.append(random_num)
+
         # Check for matches and add them to the player's board
         for item in result:
             if isinstance(item, int):
                 for row in self.board.tiles:
                     if item in row:
-                        self.player_board.append([item])  # Add matched number to player's board
-                        row[row.index(item)] = 'X '  # Mark the number as matched on the game board
+                        self.player_board.append([item])  
+                        row[row.index(item)] = 'X ' 
         return result
 
 
@@ -274,34 +278,36 @@ class SlingoGame:
             
             total_points_earned = points_earned - points_lost
             self.player.add_points(total_points_earned)
-            self.scores.append(self.player.points)  # Store the score after each round
+            self.scores.append(self.player.points) 
        
             
             for item in spin_result:
                 if isinstance(item, int):
-                    # Check if the number matches any on the board and update points earned
                     matched_numbers = []
+
                     for row in self.player_board:
                         if item in row:
                             points_earned += 5
                             matched_numbers.append(item)
+
                     if matched_numbers:
                         print("Matched numbers in this round:", matched_numbers)
+
                 elif isinstance(item, str) and item == "Free Space":
-                    # Implement logic to obtain a free space with a random number
-                    random_num = spin_result[spin_result.index("Free Space") + 1]  # Get the next item after "Free Space"
+                    random_num = spin_result[spin_result.index("Free Space") + 1]  
                     self.player_board.append([random_num])
                     print("You have obtained a Free Space with number:", random_num)
+
                 elif isinstance(item, str) and item == "Double Points":
                     print("Points Doubled!")
+
                 elif isinstance(item, str) and item == "Lose Points":
-                    # Implement logic to deduct points
-                    points_to_lose = random.randint(1, 50)  # Example: random deduction between 1 and 100
+                    points_to_lose = random.randint(1, 50)  
+
                     if points_to_lose >= self.player.points:
-                        # Points to lose exceed total points, end the game
                         print("You lost all your points. Game over!")
                         self.player.points = 0
-                        break  # End the game
+                        break  
                     else:
                         points_lost += points_to_lose  # Accumulate points lost
                         print(f"You lost {points_to_lose} points.")
@@ -318,7 +324,7 @@ class SlingoGame:
             print("Points earned this round:", total_points_earned)
             print("Total points:", self.player.points)
 
-            # Print the updated board
+            
             self.print_updated_board()
 
             if self.player.points >= 200:
@@ -435,6 +441,8 @@ def create_csv_when_quit(scores_all_games):
 
     Returns:
         bool: True if a CSV file was created, False otherwise.
+
+    Author: Nahum Ephrem
     """
     if len(scores_all_games) > 0:
         with open('scores_when_quit.csv', mode='w', newline='') as file:
@@ -445,7 +453,7 @@ def create_csv_when_quit(scores_all_games):
         return True
     return False
 
-import pandas as pd
+
 
 def filter_best_spins(scores_filename, output_filename):
     """Filter the best spins that earned above the average increase.
