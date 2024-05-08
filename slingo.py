@@ -5,7 +5,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import re
 import json
-
+import csv
+import pandas as pd
 
 STARTING_SPINS = 10
 #Wildcard type and their chance (probability) of showing up.
@@ -321,7 +322,7 @@ class SlingoGame:
             self.print_updated_board()
 
             if self.player.points >= 200:
-                print("Game over! You have reached or exceeded 200 points!")
+                print("Game over! You have reached or exceeded 200 points! Select 'q' to quit and see stats")
                 self.max_contribution(spin_scores)
                 return
             
@@ -332,7 +333,7 @@ class SlingoGame:
                 if response.lower() == 'q':
                     exit()
 
-        print("No more spins left. Game over!")
+        print("No more spins left. Round over!")
         self.max_contribution(spin_scores)
     
     def save_game_state(self, filename):
@@ -409,6 +410,74 @@ class Player:
         """
         self.points += points
          
+def plot_score_trend(scores_all_games):
+    """Plot the trend of scores over multiple games. 
+
+    Args:
+        scores_all_games (list of int): List of scores after each game.
+
+    Author: Nahum Ephrem
+
+    Technique: Visualizing data (pyplot and seaborn)
+    """
+    plt.figure(figsize=(12, 6))
+    sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
+    plt.xlabel('Spin Number')
+    plt.ylabel('Score')
+    plt.title('Score Trend Over Multiple Spins')
+    plt.show()
+    
+def create_csv_when_quit(scores_all_games):
+    """Create a CSV file when the player clicks 'q' to quit the game.
+
+    Args:
+        scores_all_games (list of int): List of scores after each game.
+
+    Returns:
+        bool: True if a CSV file was created, False otherwise.
+    """
+    if len(scores_all_games) > 0:
+        with open('scores_when_quit.csv', mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Spin', 'Score'])
+            for i, score in enumerate(scores_all_games, start=1):
+                writer.writerow([i, score])
+        return True
+    return False
+
+import pandas as pd
+
+def filter_best_spins(scores_filename, output_filename):
+    """Filter the best spins that earned above the average increase.
+
+    Args:
+        scores_filename (str): The name of the input CSV file containing scores.
+        output_filename (str): The name of the output CSV file to save the filtered spins.
+
+    Author: Nahum Ephrem
+    Technique: Pandas
+    """
+
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv(scores_filename)
+
+    # Calculate the score increase from the previous spin
+    df['Score Increase'] = df['Score'].diff()
+
+    # Sort the spins based on the score increase
+    sorted_df = df.sort_values(by='Score Increase', ascending=False)
+
+    # Select the top 10 spins with the greatest score increase
+    top_10_spins = sorted_df.head(10)
+
+    # Save the top 10 spins to a new CSV file
+    top_10_spins.to_csv(output_filename, index=False)
+
+    return top_10_spins
+
+# Filter the best spins
+filter_best_spins('scores_when_quit.csv', 'top_10_spins.csv')
+
 
 #Main project file
 def main():
@@ -443,6 +512,8 @@ def main():
             scores_all_games.extend(game.scores)  # Adds scores from the current game to the list
         elif response.lower() == "q":
             print("Thank you for playing Slingo!")
+            if create_csv_when_quit(scores_all_games):
+                filter_best_spins('scores_when_quit.csv', 'top_10_spins.csv')
             play = False
         elif response.lower() == "h":
             with open("Slingo_example.txt", "r", encoding= "utf-8") as f:
@@ -459,24 +530,6 @@ def main():
     # Load game state
     game.curr_game_state("game_state.json")
 
-
-
-def plot_score_trend(scores_all_games):
-    """Plot the trend of scores over multiple games. 
-
-    Args:
-        scores_all_games (list of int): List of scores after each game.
-
-    Author: Nahum Ephrem
-
-    Technique: Visualizing data (seaborn)
-    """
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
-    plt.xlabel('Spin Number')
-    plt.ylabel('Score')
-    plt.title('Score Trend Over Multiple Spins')
-    plt.show()
 
 
 def parse_args(arglist):
