@@ -235,7 +235,19 @@ class SlingoGame:
             print(f"The spin that contributed the most points was {max_contribution}.")
     
     def play_game(self, special_wildcards = None):
-        """Starts and plays the Slingo game."""
+        """Starts and plays the Slingo game.
+
+        Args:
+            special_wildcards (dict, optional): A dictionary containing special wildcards and their probabilities.
+
+        Side Effects:
+            - Manages the game loop, including player spins, updating points, and printing game information.
+            - Modifies the game state including player points, spins left, and player board.
+            
+        Author: Egypt Butler
+        
+        Technique: Optional Parameters 
+        """
         
         print("Welcome to Slingo, let's begin!")
         print("Here is your Slingo board: ")
@@ -355,6 +367,8 @@ class Player:
             points (int): The amonunt of points the player has.
             
         Author: Egypt Butler
+        
+        Technique: Regular Expressions
         """
         if not re.match(r"^[a-zA-Z\s]+$", name):
             raise ValueError("Invalid name. Name must contain only letters and spaces.")
@@ -378,6 +392,8 @@ class Player:
 
         Side Effects:
             Modifies the player's total points.
+            
+        Author: Egypt Butler
         """
         self.points += points
          
