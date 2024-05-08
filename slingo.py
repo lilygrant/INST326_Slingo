@@ -252,6 +252,7 @@ class SlingoGame:
         print("Welcome to Slingo, let's begin!")
         print("Here is your Slingo board: ")
         self.print_updated_board()
+        spin_scores = []
         while self.spins > 0:
             print("\nSpins left:", self.spins)
             print("Player board:", self.player_board)
