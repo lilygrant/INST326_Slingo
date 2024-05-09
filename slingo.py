@@ -7,6 +7,7 @@ import re
 import json
 import csv
 import pandas as pd
+import os
 
 STARTING_SPINS = 10
 #Wildcard type and their chance (probability) of showing up.
@@ -225,8 +226,6 @@ class SlingoGame:
             print("----------------")
             for col in range(5):
                 num = self.board.tiles[row][col]
-                if num < 10:
-                    num = f"{num} "
                 if num in player_board_set:
                     print("|X", end="")
                 else:
@@ -446,13 +445,15 @@ def create_csv_when_quit(scores_all_games):
 
     Author: Nahum Ephrem
     """
-    if len(scores_all_games) > 0:
+    if scores_all_games:
         with open('scores_when_quit.csv', mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Spin', 'Score'])
             for i, score in enumerate(scores_all_games, start=1):
                 writer.writerow([i, score])
+        print("Scores saved successfully.")
         return True
+    print("No scores to save.")
     return False
 
 
@@ -467,26 +468,16 @@ def filter_best_spins(scores_filename, output_filename):
     Author: Nahum Ephrem
     Technique: Pandas
     """
+    if not os.path.exists(scores_filename):
+        print(f"File {scores_filename} does not exist. Exiting filtering process.")
+        return None
 
-    # Read the CSV file into a DataFrame
     df = pd.read_csv(scores_filename)
+    df['Score Increase'] = df['Score'].diff().fillna(0)
+    top_spins = df.sort_values(by='Score Increase', ascending=False).head(10)
+    top_spins.to_csv(output_filename, index=False)
+    print(f"Filtered data saved to {output_filename}.")
 
-    # Calculate the score increase from the previous spin
-    df['Score Increase'] = df['Score'].diff()
-
-    # Sort the spins based on the score increase
-    sorted_df = df.sort_values(by='Score Increase', ascending=False)
-
-    # Select the top 10 spins with the greatest score increase
-    top_10_spins = sorted_df.head(10)
-
-    # Save the top 10 spins to a new CSV file
-    top_10_spins.to_csv(output_filename, index=False)
-
-    return top_10_spins
-
-# Filter the best spins
-filter_best_spins('scores_when_quit.csv', 'top_10_spins.csv')
 
 
 #Main project file
@@ -510,7 +501,14 @@ def main():
           """
     name = input("Please Enter your name: ")
     player = Player(name,0)
+    game = SlingoGame(player)
+    game.play_game()
     print(f"Welcome to Slingo {name}!")
+    
+    if create_csv_when_quit(game.scores):
+        filter_best_spins('scores_when_quit.csv', 'top_10_spins.csv')
+    else:
+        print("No data to generate CSV.")
 
     play = True
     scores_all_games = []  # Store score from all games
