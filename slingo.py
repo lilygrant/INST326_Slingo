@@ -225,6 +225,8 @@ class SlingoGame:
             print("----------------")
             for col in range(5):
                 num = self.board.tiles[row][col]
+                if num < 10:
+                    num = f"{num} "
                 if num in player_board_set:
                     print("|X", end="")
                 else:
