@@ -340,11 +340,16 @@ class SlingoGame:
                 if response.lower() == 'q':
                     exit()
 
-        print("No more spins left. Round over!")
+        print("No more spins left. Game over!")
         self.max_contribution(spin_scores)
     
     def save_game_state(self, filename):
-        """it saves the current game state to a JSOnfile."""
+        """it saves the current game state to a JSOnfile.
+        
+        Args: 
+        filename (str): name of file to save data
+        """
+        
         game_state = {
             "player_name": self.player.name,
             "points": self.player.points,
@@ -418,7 +423,7 @@ class Player:
         self.points += points
          
 def plot_score_trend(scores_all_games):
-    """Plot the trend of scores over multiple games. 
+    """Plot the trend of winners scores(at least 200 pt) over multiple games. 
 
     Args:
         scores_all_games (list of int): List of scores after each game.
@@ -431,7 +436,7 @@ def plot_score_trend(scores_all_games):
     sns.lineplot(x=range(1, len(scores_all_games)+1), y=scores_all_games)
     plt.xlabel('Spin Number')
     plt.ylabel('Score')
-    plt.title('Score Trend Over Multiple Spins')
+    plt.title('Winner (200pt) Score Trend Over Multiple Spins')
     plt.show()
     
 def create_csv_when_quit(scores_all_games):
@@ -476,7 +481,7 @@ def filter_best_spins(scores_filename, output_filename):
     df['Score Increase'] = df['Score'].diff().fillna(0)
     top_spins = df.sort_values(by='Score Increase', ascending=False).head(10)
     top_spins.to_csv(output_filename, index=False)
-    print(f"Filtered data saved to {output_filename}.")
+    print(f"Filtered data saved to {output_filename}, Win at 200 points for graph.")
 
 
 
@@ -520,6 +525,7 @@ def main():
             scores_all_games.extend(game.scores)  # Adds scores from the current game to the list
         elif response.lower() == "q":
             print("Thank you for playing Slingo!")
+            plot_score_trend(scores_all_games)
             if create_csv_when_quit(scores_all_games):
                 filter_best_spins('scores_when_quit.csv', 'top_10_spins.csv')
             play = False
@@ -530,7 +536,7 @@ def main():
         else:
             print(f'Not a valid choice, please select s, h, or q.')
     
-    plot_score_trend(scores_all_games)  # plots the score trend after all games have been played
+      # plots the score trend after all games have been played
 
  # Save game state
     game.save_game_state("game_state.json")
